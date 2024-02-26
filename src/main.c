@@ -54,8 +54,8 @@ int main() {
         "EndGame",
         SDL_WINDOWPOS_UNDEFINED,
         SDL_WINDOWPOS_UNDEFINED,
-        800,
-        600,
+        1280,
+        720,
         SDL_WINDOW_SHOWN
     );
 
@@ -106,24 +106,24 @@ int main() {
 
     Button startButton;
     startButton.texture = startButtonTexture;
-    startButton.rect.x = 320; // horizontal
+    startButton.rect.x = 518; // horizontal
     startButton.rect.y = 100; // vertical
-    startButton.rect.w = 150; // width 
-    startButton.rect.h = 150; // height 
+    startButton.rect.w = 250; // width 
+    startButton.rect.h = 250; // height 
     
     Button exitButton;
     exitButton.texture = exitButtonTexture;
-    exitButton.rect.x = 320; // horizontal
-    exitButton.rect.y = 200; // vertical
-    exitButton.rect.w = 150; // width 
-    exitButton.rect.h = 150; // height 
+    exitButton.rect.x = 532; // horizontal
+    exitButton.rect.y = 250; // vertical
+    exitButton.rect.w = 220; // width 
+    exitButton.rect.h = 220; // height 
     
     Button volumeButton;
     volumeButton.texture = volumeOn;
-    volumeButton.rect.x = 700;
+    volumeButton.rect.x = 1090;
     volumeButton.rect.y = 50;
-    volumeButton.rect.w = 40;
-    volumeButton.rect.h = 40;
+    volumeButton.rect.w = 60;
+    volumeButton.rect.h = 60;
 
     backgroundMusic = Mix_LoadMUS("menu.wav");
     if (!backgroundMusic) {
