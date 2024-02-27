@@ -64,18 +64,18 @@ void processEvents(SDL_Window* wind, GameState *game)
 	if (state[SDL_SCANCODE_LEFT])
 	{
 		game->cube.dx -= 0.5;
-		if(game->cube.dx < -6);
+		if(game->cube.dx < -6)
 		game->cube.dx = -6;
 	}
 	if (state[SDL_SCANCODE_RIGHT])
 	{
 		game->cube.dx += 0.5;
-		if (game->cube.dx > 6);
+		if (game->cube.dx > 6)
 		game->cube.dx = 6;
 	}
 	else
 	{
-		game->cube.dx *= 0.8f;
+		game->cube.dx *= 0.9f;
 		if(fabsf(game->cube.dx) < 0.1f)
 			game->cube.dx = 0;
 	}
