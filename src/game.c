@@ -51,9 +51,9 @@ void handleEvents(SDL_Renderer *renderer, Button *startButton, Button *exitButto
             if (SDL_PointInRect(&(SDL_Point){mouseX, mouseY}, &volumeButton->rect)) {
                 toggleSound();
                 if (soundOn) {
-                    volumeButton->texture = loadTexture(renderer, "vol1.bmp");
+                    volumeButton->texture = loadTexture(renderer, "../resourse/buttons/vol1.bmp");
                 } else {
-                    volumeButton->texture = loadTexture(renderer, "vol2.bmp");
+                    volumeButton->texture = loadTexture(renderer, "../resourse/buttons/vol2.bmp");
                 }
             }
         }
