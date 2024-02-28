@@ -15,17 +15,23 @@ int main() {
     TTF_Init();
     SDL_Init(SDL_INIT_VIDEO);
     SDL_Window * window = SDL_CreateWindow("SDL2 Bounding Box Collision Detection",
-        SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, 0);
+        SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1280, 720, 0);
     SDL_Renderer * renderer = SDL_CreateRenderer(window, -1, 0);
+    SDL_Surface * background = SDL_LoadBMP("resource/images/level0.bmp");
+    SDL_Texture * texture = SDL_CreateTextureFromSurface(renderer, background);
     
-
     SDL_Texture *alice = NULL;
     SDL_Surface *surface = SDL_LoadBMP("resource/images/alice.bmp");
     alice = SDL_CreateTextureFromSurface(renderer, surface);
-    SDL_Rect player = { x, y, 32, 64 };
-    Collectable cake = makeCollectable(150, 100, 32, 32);
+    SDL_Rect player = { x, y, 64, 128};
+
+    Collectable cake = makeCollectable(150, 100, 64, 64);
     SetCollectableImage(&cake, renderer, "./resource/images/cake.bmp");
     SetCounterText(&collectableCounter, renderer);
+
+    Collectable letter = makeCollectable(450, 300, 64, 64);
+    SetCollectableImage(&letter, renderer, "./resource/images/letter.bmp");
+    //SetCounterText(&collectableCounter, renderer);
 
  
 // handle events
@@ -44,13 +50,16 @@ int main() {
         }
     
         // TODO rendering & collision detection goes here 
-        
-        SDL_SetRenderDrawColor(renderer, 242, 242, 242, 255);
-        SDL_RenderClear(renderer);
-
-        //SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);//green
+        SDL_RenderCopy(renderer, texture, NULL, NULL);
+        // SDL_SetRenderDrawColor(renderer, 242, 242, 242, 255);
+        // SDL_RenderClear(renderer);
+      
         SDL_RenderCopy(renderer, alice, NULL, &player);
         
+
+        renderCollectable(&letter, renderer, &player, type_letter);
+        if(msg.isOn)
+            DisplayLetterText(renderer);
         renderCollectable(&cake, renderer, &player, type_collectable);
         displayText(renderer, &collectableCounter);
 
@@ -67,6 +76,7 @@ int main() {
                     case SDLK_UP:    player.y-=3; break;
                     case SDLK_DOWN:  player.y+=3; break;
                     case SDLK_ESCAPE: quit = true;
+                    case SDLK_SPACE: msg.isOn = false;
                 }
                 break;
         }
