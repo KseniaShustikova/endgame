@@ -1,4 +1,4 @@
-#include "C:\Users\utico\source\repos\endgame\endgame\header.h"
+#include "header.h"
 
 SDL_Texture* loadTexture(SDL_Renderer* renderer, const char* filename) {
     SDL_Surface* surface = IMG_Load(filename);
