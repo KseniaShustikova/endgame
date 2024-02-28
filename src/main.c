@@ -21,23 +21,23 @@ int main() {
     Button startButton;
     startButton.texture = startButtonTexture;
     startButton.rect.x = 518;
-    startButton.rect.y = 100;
+    startButton.rect.y = 350;
     startButton.rect.w = 250;
-    startButton.rect.h = 250;
+    startButton.rect.h = 100;
 
     Button exitButton;
     exitButton.texture = exitButtonTexture;
     exitButton.rect.x = 532;
-    exitButton.rect.y = 250;
+    exitButton.rect.y = 500;
     exitButton.rect.w = 220;
-    exitButton.rect.h = 220;
+    exitButton.rect.h = 90;
 
     Button volumeButton;
     volumeButton.texture = volumeOn;
-    volumeButton.rect.x = 1090;
+    volumeButton.rect.x = 1100;
     volumeButton.rect.y = 50;
-    volumeButton.rect.w = 60;
-    volumeButton.rect.h = 60;
+    volumeButton.rect.w = 45;
+    volumeButton.rect.h = 45;
 
     backgroundMusic = Mix_LoadMUS("../resourse/audio/menu.wav");
     if (!backgroundMusic) {
