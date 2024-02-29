@@ -38,7 +38,7 @@ int main() {
 	game.exitButton.rect.h = 90;
 
 	game.volumeButton.texture = volumeOn;
-	game.volumeButton.rect.x = 1100;
+	game.volumeButton.rect.x = 1185;
 	game.volumeButton.rect.y = 50;
 	game.volumeButton.rect.w = 45;
 	game.volumeButton.rect.h = 45;
