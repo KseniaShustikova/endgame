@@ -50,6 +50,7 @@ typedef struct
 	SDL_Texture* aliceFrames[6];
 	SDL_Texture* tiles;
 	SDL_Texture* collactbleImage;
+	SDL_Texture* backgroundTexture;
 	int time;
 
 	//Renderer
@@ -79,11 +80,11 @@ int main(int argc, char* argv[])
 
 	//Create an application window with the following settings:
 	window = SDL_CreateWindow("Alice's Adventures: Tea Odyssey", // window title
-	                          SDL_WINDOWPOS_UNDEFINED, // initial x position
-	                          SDL_WINDOWPOS_UNDEFINED, // initial y position
-	                          1280, // width, in pixels
-	                          720, // height, in pixels
-	                          0 // flags
+		SDL_WINDOWPOS_UNDEFINED, // initial x position
+		SDL_WINDOWPOS_UNDEFINED, // initial y position
+		1280, // width, in pixels
+		720, // height, in pixels
+		0 // flags
 	);
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	gameState.renderer = renderer;
@@ -119,6 +120,7 @@ int main(int argc, char* argv[])
 	SDL_DestroyTexture(gameState.aliceFrames[4]);
 	SDL_DestroyTexture(gameState.aliceFrames[5]);
 	SDL_DestroyTexture(gameState.tiles);
+	SDL_DestroyTexture(gameState.backgroundTexture);
 
 	// Close and destroy the window
 	SDL_DestroyWindow(window);
@@ -203,6 +205,17 @@ void loadGame(GameState* game)
 	game->collactbleImage = SDL_CreateTextureFromSurface(game->renderer, surface);
 	SDL_FreeSurface(surface);
 
+	surface = IMG_Load("images/level1.bmp");
+	game->backgroundTexture = SDL_CreateTextureFromSurface(game->renderer, surface);
+	SDL_FreeSurface(surface);
+
+	if (surface == NULL)
+	{
+		printf("Cannot find background image: %s\n\n");
+		SDL_Quit();
+		exit(1);
+	}
+
 
 	game->alice.x = ALICE_STAR_POSITION_X;
 	game->alice.y = ALICE_STAR_POSITION_Y;
@@ -267,32 +280,32 @@ int processEvents(SDL_Window* window, GameState* game)
 		switch (event.type)
 		{
 		case SDL_WINDOWEVENT_CLOSE:
+		{
+			if (window)
 			{
-				if (window)
-				{
-					SDL_DestroyWindow(window);
-					window = NULL;
-					done = 1;
-				}
+				SDL_DestroyWindow(window);
+				window = NULL;
+				done = 1;
 			}
-			break;
+		}
+		break;
 		case SDL_KEYDOWN:
+		{
+			switch (event.key.keysym.sym)
 			{
-				switch (event.key.keysym.sym)
+			case SDLK_ESCAPE:
+				done = 1;
+				break;
+			case SDLK_UP:
+				if (game->alice.onLedge)
 				{
-				case SDLK_ESCAPE:
-					done = 1;
-					break;
-				case SDLK_UP:
-					if (game->alice.onLedge)
-					{
-						game->alice.dy = -8;
-						game->alice.onLedge = 0;
-					}
-					break;
+					game->alice.dy = -8;
+					game->alice.onLedge = 0;
 				}
+				break;
 			}
-			break;
+		}
+		break;
 		case SDL_QUIT:
 			//quit out of the game
 			done = 1;
@@ -425,6 +438,22 @@ void collisionDetect(GameState* game)
 		float mw = 32, mh = 64;
 		float mx = game->alice.x, my = game->alice.y;
 		float bx = game->ledges[i].x, by = game->ledges[i].y, bw = game->ledges[i].w, bh = game->ledges[i].h;
+
+		if (game->alice.x < 0) {
+			game->alice.x = 0;
+		}
+		if (game->alice.x + 32 > 1280) {
+			game->alice.x = 1280 - 32;
+		}
+		if (game->alice.y < 0) {
+			game->alice.y = 0;
+		}
+		if (game->alice.y + 64 > 720) {
+			game->alice.y = 720 - 64;
+			game->alice.dy = 0;
+			game->alice.onLedge = 1;
+		}
+
 		if (mx + mw / 2 > bx && mx + mw / 2 < bx + bw)
 		{
 			//are we bumping our head?
@@ -488,18 +517,18 @@ void doRender(SDL_Renderer* renderer, GameState* game)
 	SDL_RenderClear(renderer);
 
 	//set the drawing color to white
-	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+	SDL_RenderCopy(renderer, game->backgroundTexture, NULL, NULL);
 
 	for (int i = 0; i < 100; i++)
 	{
-		SDL_Rect ledgeRect = {game->ledges[i].x, game->ledges[i].y, game->ledges[i].w, game->ledges[i].h};
+		SDL_Rect ledgeRect = { game->ledges[i].x, game->ledges[i].y, game->ledges[i].w, game->ledges[i].h };
 		SDL_RenderCopy(renderer, game->tiles, NULL, &ledgeRect);
 	}
 
 	//draw a rectangle at man's position
-	SDL_Rect rect = {game->alice.x, game->alice.y, 32, 64};
+	SDL_Rect rect = { game->alice.x, game->alice.y, 32, 64 };
 	SDL_RenderCopyEx(renderer, game->aliceFrames[game->alice.animFrame],
-	                 NULL, &rect, 0, NULL, (game->alice.facingLeft == 0));
+		NULL, &rect, 0, NULL, (game->alice.facingLeft == 0));
 
 	renderCallectable(renderer, game);
 
@@ -516,7 +545,7 @@ void renderCallectable(SDL_Renderer* renderer, GameState* game)
 	}
 	else
 	{
-		SDL_Rect collectableRect = {game->collectable.x, game->collectable.y, game->collectable.w, game->collectable.h};
+		SDL_Rect collectableRect = { game->collectable.x, game->collectable.y, game->collectable.w, game->collectable.h };
 		SDL_RenderCopy(renderer, game->collactbleImage, NULL, &collectableRect);
 	}
 }
@@ -526,7 +555,7 @@ void renderCounterText(int counter, SDL_Renderer* renderer)
 {
 	char text[20];
 	char counterText[2];
-	SDL_Color black = {0, 0, 0, 255};
+	SDL_Color white = { 255, 255, 255,255 };
 	TTF_Font* Sans;
 	SDL_Surface* surfaceMessage;
 	SDL_Texture* Message;
@@ -536,7 +565,7 @@ void renderCounterText(int counter, SDL_Renderer* renderer)
 	Sans = TTF_OpenFont("./resource/fonts/font.ttf", 12);
 	if (!Sans)
 		printf("%s", TTF_GetError());
-	surfaceMessage = TTF_RenderText_Solid(Sans, text, black);
+	surfaceMessage = TTF_RenderText_Solid(Sans, text, white);
 	if (!surfaceMessage)
 		printf("%s", TTF_GetError());
 	Message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
