@@ -1,7 +1,5 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include <stdio.h>
-#include <time.h>
 #include <stdbool.h>
 #include "SDL2/SDL_ttf.h"
 #include <stdio.h>
@@ -13,7 +11,7 @@
 const int ALICE_STAR_POSITION_X = 50;
 const int ALICE_STAR_POSITION_Y = 570;
 const int DOOR_POSITION_X = 1230;
-const int DOOR_POSIRTION_Y = 275;
+const int DOOR_POSITION_Y = 275;
 
 typedef struct
 {
@@ -51,6 +49,7 @@ typedef struct
 	SDL_Texture* collactbleImage;
 	
 	int time;
+	int teleportCount;
 
 	//Renderer
 	SDL_Renderer* renderer;
@@ -60,9 +59,8 @@ void initCollectableAboveLedge(GameState* game);
 void loadGame(GameState* game);
 void renderCounterText(int counter, SDL_Renderer* renderer);
 int collide2d(float x1, float y1, float x2, float y2, float wt1, float ht1, float wt2, float ht2);
+void teleportAliceToStartPosition(object *alice);
 int processEvents(SDL_Window* window, GameState* game);
-void teleportAliceToStartPosition(object* alice);
-bool isAliceOnTheFloor(object* alice);
 void process(GameState* game);
 void doRender(SDL_Renderer* renderer, GameState* game);
 void collisionDetect(GameState* game);
@@ -119,7 +117,7 @@ int main(int argc, char* argv[])
 	SDL_DestroyTexture(gameState.aliceFrames[4]);
 	SDL_DestroyTexture(gameState.aliceFrames[5]);
 	SDL_DestroyTexture(gameState.tiles);
-
+	
 	// Close and destroy the window
 	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(renderer);
@@ -213,6 +211,7 @@ void loadGame(GameState* game)
 	game->alice.slowingDown = 0;
 
 	game->time = 0;
+	game->teleportCount = 0;
 
 	//init ledges
 	for (int i = 0; i < 15; i++)
@@ -392,6 +391,13 @@ int processEvents(SDL_Window* window, GameState* game)
 	return done;
 }
 
+void teleportAliceToStartPosition(object *alice) {
+     alice->x = ALICE_STAR_POSITION_X;
+     alice->y = ALICE_STAR_POSITION_Y;
+     alice->dx = 0;
+     alice->dy = 0;
+}
+
 void process(GameState* game)
 {
 	//add time
@@ -423,6 +429,13 @@ void process(GameState* game)
 	else
 	{
 		alice->animFrame = 0;
+	}
+	
+	if (collide2d(game->alice.x, game->alice.y, DOOR_POSITION_X, DOOR_POSITION_Y, 32, 64, 50, 75)) {
+	    if (game->teleportCount < 2) {
+	    teleportAliceToStartPosition(&game->alice);
+	    game->teleportCount++;
+	    }
 	}
 
 	Collectable* collectable = &game->collectable;
