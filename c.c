@@ -49,6 +49,7 @@ typedef struct
 	SDL_Texture* aliceFrames[6];
 	SDL_Texture* tiles;
 	SDL_Texture* collactbleImage;
+	
 	int time;
 
 	//Renderer
@@ -198,10 +199,9 @@ void loadGame(GameState* game)
 	game->tiles = SDL_CreateTextureFromSurface(game->renderer, surface);
 	SDL_FreeSurface(surface);
 
-	surface = IMG_Load("images/dish.png");
+	surface = IMG_Load("images/dish.bmp");
 	game->collactbleImage = SDL_CreateTextureFromSurface(game->renderer, surface);
 	SDL_FreeSurface(surface);
-
 
 	game->alice.x = ALICE_STAR_POSITION_X;
 	game->alice.y = ALICE_STAR_POSITION_Y;
@@ -302,7 +302,7 @@ void loadGame(GameState* game)
 void initCollectableAboveLedge(GameState* game)
 {
 	game->collectable.x = 850;
-	game->collectable.y = 120;
+	game->collectable.y = 97;
 	game->collectable.w = 32;
 	game->collectable.h = 32;
 }
