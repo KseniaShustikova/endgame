@@ -72,7 +72,7 @@ void DisplayLetterText(SDL_Renderer *renderer){
     SDL_RenderFillRect(renderer,&background);
     SDL_RenderCopy(renderer, msg.texture, NULL, &msg.rect);
 }
-
+//For the third level developer
 void DisplayEndPicture(SDL_Renderer *renderer, char *path){
     SDL_Rect background;
     SDL_Surface* surfacePicture;

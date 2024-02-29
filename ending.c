@@ -80,6 +80,7 @@ int main() {
                     case SDLK_ESCAPE: quit = true;
                     case SDLK_SPACE: msg.isOn = false;
                     //case SDLK_y: isEnd = true; // did it just to check if the function works, you should change the flag when here is a collision with the last door = the game end
+                    //and then probably no need for extra key to close it, we can finish just with picture
                 }
                 break;
 
