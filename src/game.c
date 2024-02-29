@@ -124,8 +124,8 @@ void loadGame(GameState* game, const char* backgroundFile, const char* musicFile
     //init ledges
     for (int i = 0; i < 100; i++)
     {
-        game->ledges[i].w = 200;
-        game->ledges[i].h = 54;
+        game->ledges[i].w = 250;
+        game->ledges[i].h = 78;
         game->ledges[i].x = i * 200;
         game->ledges[i].y = 650;
     }
