@@ -29,6 +29,11 @@ typedef struct
 	int x, y, w, h;
 } Ledge;
 
+typedef struct Door
+{
+	int x, y, w, h;
+} Door;
+
 typedef struct Collectable
 {
 	int x, y, w, h;
@@ -43,12 +48,15 @@ typedef struct
 	//Ledges
 	Ledge ledges[100];
 
+	Door door;
+
 	Collectable collectable;
 	int counter;
 
 	//Images
 	SDL_Texture* aliceFrames[6];
 	SDL_Texture* tiles;
+	SDL_Texture* doorImage;
 	SDL_Texture* collactbleImage;
 	SDL_Texture* backgroundTexture;
 	int time;
@@ -120,6 +128,7 @@ int main(int argc, char* argv[])
 	SDL_DestroyTexture(gameState.aliceFrames[4]);
 	SDL_DestroyTexture(gameState.aliceFrames[5]);
 	SDL_DestroyTexture(gameState.tiles);
+	SDL_DestroyTexture(gameState.doorImage);
 	SDL_DestroyTexture(gameState.backgroundTexture);
 
 	// Close and destroy the window
@@ -201,6 +210,10 @@ void loadGame(GameState* game)
 	game->tiles = SDL_CreateTextureFromSurface(game->renderer, surface);
 	SDL_FreeSurface(surface);
 
+	surface = IMG_Load("images/door.bmp");
+	game->doorImage = SDL_CreateTextureFromSurface(game->renderer, surface);
+	SDL_FreeSurface(surface);
+
 	surface = IMG_Load("images/cake.png");
 	game->collactbleImage = SDL_CreateTextureFromSurface(game->renderer, surface);
 	SDL_FreeSurface(surface);
@@ -255,11 +268,17 @@ void loadGame(GameState* game)
 	game->ledges[94].x = 800;
 	game->ledges[94].y = 400;
 
+	game->door.x = 1150;
+	game->door.y = 100;
+	game->door.w = 70;
+	game->door.h = 150;
+
 	game->counter = 0;
 	game->collectable.isCollected = false;
 
 	initCollectableAboveLedge(game);
 }
+
 
 
 void initCollectableAboveLedge(GameState* game)
@@ -525,6 +544,9 @@ void doRender(SDL_Renderer* renderer, GameState* game)
 		SDL_RenderCopy(renderer, game->tiles, NULL, &ledgeRect);
 	}
 
+	SDL_Rect DoorRect = { game->door.x, game->door.y, game->door.w, game->door.h };
+	SDL_RenderCopy(renderer, game->doorImage, NULL, &DoorRect);
+
 	//draw a rectangle at man's position
 	SDL_Rect rect = { game->alice.x, game->alice.y, 32, 64 };
 	SDL_RenderCopyEx(renderer, game->aliceFrames[game->alice.animFrame],
@@ -536,6 +558,7 @@ void doRender(SDL_Renderer* renderer, GameState* game)
 	//We are done drawing, "present" or show to the screen what we've drawn
 	SDL_RenderPresent(renderer);
 }
+
 
 void renderCallectable(SDL_Renderer* renderer, GameState* game)
 {
