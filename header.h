@@ -1,5 +1,16 @@
+#pragma oncce
+
 #ifndef HEADER_H
 #define HEADER_H
+
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#include <stdio.h>
+#include <time.h>
+#include <stdbool.h>
+#include "SDL2/SDL_ttf.h"
+#include <stdio.h>
+#include <time.h>
 
 typedef struct
 {
@@ -41,22 +52,11 @@ typedef struct
 	SDL_Renderer* renderer;
 } GameState;
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#include <stdio.h>
-#include <time.h>
-#include <stdbool.h>
-#include "SDL2/SDL_ttf.h"
-#include <stdio.h>
-#include <time.h>
-
 void initCollectableAboveLedge(GameState* game);
 void loadGame(GameState* game);
 void renderCounterText(int counter, SDL_Renderer* renderer);
 int collide2d(float x1, float y1, float x2, float y2, float wt1, float ht1, float wt2, float ht2);
 int processEvents(SDL_Window* window, GameState* game);
-void teleportAliceToStartPosition(object* alice);
-bool isAliceOnTheFloor(object* alice);
 void process(GameState* game);
 void doRender(SDL_Renderer* renderer, GameState* game);
 void collisionDetect(GameState* game);
