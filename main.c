@@ -585,7 +585,7 @@ void renderCounterText(int counter, SDL_Renderer* renderer)
 
 	sprintf(counterText, "%d", counter);
 	sprintf(text, "%s %s", "items collected: ", counterText);
-	Sans = TTF_OpenFont("./resource/fonts/font.ttf", 12);
+	Sans = TTF_OpenFont("./resourse/fonts/font.ttf", 12);
 	if (!Sans)
 		printf("%s", TTF_GetError());
 	surfaceMessage = TTF_RenderText_Solid(Sans, text, white);
@@ -597,3 +597,4 @@ void renderCounterText(int counter, SDL_Renderer* renderer)
 
 	SDL_RenderCopy(renderer, Message, NULL, &(SDL_Rect){0, 0, 200, 50});
 }
+
