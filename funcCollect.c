@@ -12,7 +12,6 @@ void SetCollectableImage(Collectable *element, SDL_Renderer *renderer, char* pat
     SDL_Texture *cake = NULL;
     SDL_Surface *surface = SDL_LoadBMP(path);
     cake = SDL_CreateTextureFromSurface(renderer, surface);
-
     element->image = cake;
     SDL_FreeSurface(surface);
 }
@@ -52,12 +51,11 @@ void DisplayLetterText(SDL_Renderer *renderer){
     int marginX = 150;
     int marginY = 100;
     SDL_Rect background;
-
     msg.text = "Привіт, Алісо! Ласкаво просимо до Країни Чудес! Ми вже чекаємо на тебе на нашому святковому чаюванні, але, здається, ми загубили кілька предметів. Знайди їх, будь ласка, щоб злий Оракл не вийшов на наш слід! Він може зловити тебе, будь обережною!";
     Sans = TTF_OpenFont("./resource/fonts/font.ttf", 24);
     if(!Sans)
         printf("%s", TTF_GetError());
-    //replace 640 with window width
+    //replace 1280 with window width
     surfaceMessage =  TTF_RenderUTF8_Blended_Wrapped(Sans, msg.text, black, 1280-marginX);
     if(!surfaceMessage)
         printf("%s", TTF_GetError()); 
@@ -66,14 +64,27 @@ void DisplayLetterText(SDL_Renderer *renderer){
         printf("%s", TTF_GetError());
     msg.texture = texture;
     SDL_QueryTexture(texture, NULL, NULL, &texW, &texH);
-    //replace 400 with window height
+    //replace 720 with window height
     msg.rect = (SDL_Rect){marginX, 720-marginY, texW - marginX, texH};
     background = (SDL_Rect){marginX, 720-marginY, texW - marginX, texH};
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
     SDL_SetRenderDrawColor( renderer,255,255 ,255,100);
     SDL_RenderFillRect(renderer,&background);
-
     SDL_RenderCopy(renderer, msg.texture, NULL, &msg.rect);
+}
+
+void DisplayEndPicture(SDL_Renderer *renderer, char *path){
+    SDL_Rect background;
+    SDL_Surface* surfacePicture;
+    SDL_Texture* texture; 
+    surfacePicture = SDL_LoadBMP(path);
+    texture = SDL_CreateTextureFromSurface(renderer, surfacePicture);
+    if(!surfacePicture)
+        printf("%s", TTF_GetError());
+    if(!texture)
+        printf("%s", TTF_GetError());
+    background = (SDL_Rect){0, 0, 1280, 720};
+    SDL_RenderCopy(renderer, texture, NULL, NULL);
 }
 
 // to render the collectable if the player hasn't collected it yet

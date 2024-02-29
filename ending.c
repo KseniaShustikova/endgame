@@ -2,8 +2,8 @@
 
 #undef main 
 
-// global counter
 counter collectableCounter;
+int isEnd = false;//global variable to hold if the game is done or not (will bu used below in the code)
 
 int main() {
 
@@ -11,6 +11,7 @@ int main() {
     SDL_Event event;
     int x = 288;
     int y = 208;
+
 // init SDL
     TTF_Init();
     SDL_Init(SDL_INIT_VIDEO);
@@ -31,8 +32,6 @@ int main() {
 
     Collectable letter = makeCollectable(450, 300, 64, 64);
     SetCollectableImage(&letter, renderer, "./resource/images/letter.bmp");
-    //SetCounterText(&collectableCounter, renderer);
-
  
 // handle events
  
@@ -48,22 +47,25 @@ int main() {
                 break;
             // TODO keyboard input handling goes here
         }
-    
+        
+        if(!isEnd){
         // TODO rendering & collision detection goes here 
         SDL_RenderCopy(renderer, texture, NULL, NULL);
-        // SDL_SetRenderDrawColor(renderer, 242, 242, 242, 255);
-        // SDL_RenderClear(renderer);
       
         SDL_RenderCopy(renderer, alice, NULL, &player);
         
-
         renderCollectable(&letter, renderer, &player, type_letter);
         if(msg.isOn)
-        DisplayLetterText(renderer);
+            DisplayLetterText(renderer);
         renderCollectable(&cake, renderer, &player, type_collectable);
         displayText(renderer, &collectableCounter);
-
-        SDL_RenderPresent(renderer);
+        }
+        // else if (isEnd && counter = 3)
+        //     DisplayEndPicture(renderer, "resource/images/endgood.bmp");
+        // else if (isEnd && counter != 3)
+        //     DisplayEndPicture(renderer, "resource/images/endbad.bmp");
+        // SDL_RenderPresent(renderer); // also an example how to finish the game with different endings
+       
         switch (event.type) {
             case SDL_QUIT:
                 quit = true;
@@ -77,9 +79,12 @@ int main() {
                     case SDLK_DOWN:  player.y+=3; break;
                     case SDLK_ESCAPE: quit = true;
                     case SDLK_SPACE: msg.isOn = false;
+                    //case SDLK_y: isEnd = true; // did it just to check if the function works, you should change the flag when here is a collision with the last door = the game end
                 }
                 break;
+
         }
+
         SDL_RenderPresent(renderer);
       
     }
