@@ -56,6 +56,7 @@ void initCollectableAboveLedge(GameState* game);
 void loadGame(GameState* game);
 void renderCounterText(int counter, SDL_Renderer* renderer);
 int collide2d(float x1, float y1, float x2, float y2, float wt1, float ht1, float wt2, float ht2);
+void teleportAliceToStartPosition(object *alice);
 int processEvents(SDL_Window* window, GameState* game);
 void process(GameState* game);
 void doRender(SDL_Renderer* renderer, GameState* game);
