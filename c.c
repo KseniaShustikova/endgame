@@ -288,7 +288,7 @@ void loadGame(GameState* game)
 	game->ledges[13].h = 35;
 	
 	game->ledges[14].x = 800;
-	game->ledges[14].y = 600;
+	game->ledges[14].y = 570;
 	game->ledges[14].w = 150;
 	game->ledges[14].h = 35;
 	
@@ -424,11 +424,6 @@ void process(GameState* game)
 	{
 		alice->animFrame = 0;
 	}
-
-	/*if (isAliceOnTheFloor(alice))
-	{
-		teleportAliceToStartPosition(alice);
-	}*/
 
 	Collectable* collectable = &game->collectable;
 	if (collide2d(
@@ -583,7 +578,7 @@ void doRender(SDL_Renderer* renderer, GameState* game)
 
 	renderCallectable(renderer, game);
 
-	//renderCounterText(game->counter, renderer);
+	renderCounterText(game->counter, renderer);
 	//We are done drawing, "present" or show to the screen what we've drawn
 	SDL_DestroyTexture(backgroundTexture);
 	SDL_DestroyTexture(doorTexture);
@@ -604,11 +599,11 @@ void renderCallectable(SDL_Renderer* renderer, GameState* game)
 }
 
 // to set the text on top of the counter
-/*void renderCounterText(int counter, SDL_Renderer* renderer)
+void renderCounterText(int counter, SDL_Renderer* renderer)
 {
 	char text[20];
 	char counterText[2];
-	SDL_Color black = {0, 0, 0, 255};
+	SDL_Color black = {255, 255, 255, 255};
 	TTF_Font* Sans;
 	SDL_Surface* surfaceMessage;
 	SDL_Texture* Message;
@@ -626,4 +621,4 @@ void renderCallectable(SDL_Renderer* renderer, GameState* game)
 		printf("%s", TTF_GetError());
 
 	SDL_RenderCopy(renderer, Message, NULL, &(SDL_Rect){0, 0, 200, 50});
-}*/
+}
