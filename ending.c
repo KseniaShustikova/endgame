@@ -1,5 +1,5 @@
 #include"./collectable.h"
-
+//FINISHED FILE
 #undef main 
 
 counter collectableCounter;
