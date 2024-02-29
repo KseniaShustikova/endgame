@@ -1,41 +1,31 @@
-
-
 #include <SDL.h>
 #include <SDL_image.h>
 #include <stdio.h>
-#include "SDL_ttf.h"
+#include <SDL_ttf.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <time.h>
 
 #define WINDOW_W 1280
 #define WINDOW_H 720
-
 #define FPS 60
 #define FRAME_TIME (1000 / FPS)
-
 #define GRAVITY 0.35f;
 
-const int ALICE_STAR_POSITION_X = 100 - 40;
-const int ALICE_STAR_POSITION_Y = 240 - 40;
-const int FLOR_POSITION_Y = 700;
+const int ALICE_STAR_POSITION_X = 250;
+const int ALICE_STAR_POSITION_Y = 300;
+const int FLOR_POSITION_Y = 750;
 const int LEDGE_HEIGHT = 64;
 const int LEDGE_WIDTH = 256;
 const int COLLACTABLE_SIZE = 48;
-const int DOOR_HEIGHT = 50;
-const int DOOR_WIDTH = 40;
-
-/*typedef struct {
-	SDL_Texture* texture;
-	SDL_Rect rect;
-} Button;*/
+const int DOOR_HEIGHT = 64;
+const int DOOR_WIDTH = 48;
 
 typedef struct Door
 {
 	int x, y, w, h;
 	bool isCollected;
 } Door;
-
 
 typedef struct
 {
@@ -56,26 +46,32 @@ typedef struct Collectable
 	bool isCollected;
 } Collectable;
 
+typedef struct counter {
+	int counter;
+	SDL_Texture* texture;
+	SDL_Rect rect;
+
+} counter;
+
 typedef struct
 {
 	int time;
-
 	float scrollX;
+	int counter;
 
 	object alice;
 	Door door;
-
+	Door door1;
 	Collectable collectable;
-	int counter;
-
 	Ledge ledges[100];
 
 	//Images
 	SDL_Texture* aliceFrames[6];
 	SDL_Texture* tiles;
 	SDL_Texture* doorImage;
+	SDL_Texture* door1Image;
 	SDL_Texture* collactbleImage;
-	//SDL_Texture* backgroundTexture;
+	SDL_Texture* backgroundTexture;
 
 	//Renderer
 	SDL_Renderer* renderer;
@@ -88,13 +84,13 @@ void doRеnder(SDL_Renderer* renderer, GameState* game);
 void collisionDetect(GameState* game);
 void process(GameState* game);
 void initCollectableAboveLedge(GameState* game);
-void renderCounterText(int counter, SDL_Renderer* renderer);
+void renderCounterText(SDL_Renderer* renderer, GameState* game);
 int collide2d(float x1, float y1, float x2, float y2, float wt1, float ht1, float wt2, float ht2);
 void teleportAliceToStartPosition(object* alice);
 int isAliceOnTheFloor(object* alice);
 void renderCallectable(SDL_Renderer* renderer, GameState* game);
-void renderDoor(SDL_Renderer* renderer, GameState* game);
-void initDoor(GameState* game);
+void initDoors(GameState* game);
+void renderDoors(SDL_Renderer* renderer, GameState* game);
 
 void loadGame(GameState* game) {
 
@@ -166,29 +162,27 @@ void loadGame(GameState* game) {
 	SDL_FreeSurface(surface);
 
 	surface = IMG_Load("door.bmp");
-	if (surface == NULL)
-	{
-		printf("Cannot find door.png!\n\n");
-		SDL_Quit();
-		exit(1);
-	}
 	game->doorImage = SDL_CreateTextureFromSurface(game->renderer, surface);
 	SDL_FreeSurface(surface);
 
-	surface = IMG_Load("cake.png");
+	surface = IMG_Load("door1.bmp");
+	game->door1Image = SDL_CreateTextureFromSurface(game->renderer, surface);
+	SDL_FreeSurface(surface);
+
+	surface = IMG_Load("cookie4.bmp");
 	game->collactbleImage = SDL_CreateTextureFromSurface(game->renderer, surface);
 	SDL_FreeSurface(surface);
 
-	/*surface = IMG_Load("images/level4.bmp");
+	surface = IMG_Load("level3.bmp");
 	game->backgroundTexture = SDL_CreateTextureFromSurface(game->renderer, surface);
 	SDL_FreeSurface(surface);
-	*/
-	/*if (surface == NULL)
+	
+	if (surface == NULL)
 	{
 		printf("Cannot find background image: \n");
 		SDL_Quit();
 		exit(1);
-	}*/
+	}
 
 	game->scrollX = 0;
 	//cube
@@ -225,14 +219,12 @@ void loadGame(GameState* game) {
 		game->ledges[98].y = baseY - yDiff;
 		game->ledges[98].w = 208;
 		
-
 		game->ledges[97].x = baseX + 2 * xDiff;
 		game->ledges[97].y = baseY - 2 * yDiff;
 		game->ledges[97].w = 208;
 		
-
 		//cookie
-	    game->ledges[86].x = baseX + 3.5 * xDiff;
+	        game->ledges[86].x = baseX + 3.5 * xDiff;
 		game->ledges[86].y = baseY - 2.1 *yDiff;
 		game->ledges[86].w = 148;
 
@@ -264,8 +256,7 @@ void loadGame(GameState* game) {
 
 		game->ledges[91].x = baseX + 3.1 * xDiff;
 		game->ledges[91].y = game->ledges[92].y - game->ledges[91].h;
-		game->ledges[91].w = 104;
-		
+		game->ledges[91].w = 128;
 
 		//2 way
 		game->ledges[90].x = baseX + 1.3 * xDiff;
@@ -273,7 +264,7 @@ void loadGame(GameState* game) {
 		game->ledges[90].w = 128;
 		
 		//top 
-		game->ledges[89].x = baseX + 16;
+		game->ledges[89].x = baseX + 32;
 		game->ledges[89].y = baseY - 4.5  * yDiff;
 		game->ledges[89].w = 180;
 		
@@ -286,17 +277,20 @@ void loadGame(GameState* game) {
 		game->collectable.isCollected = false;
 
 		initCollectableAboveLedge(game);
-
+		initDoors(game);
 	}
-
 }
-void initDoor(GameState* game)
+void initDoors(GameState* game)
 {
-	game->collectable.x = game->ledges[89].x + game->ledges[89].w / 3 -  DOOR_WIDTH/ 2;
-	game->collectable.y = game->ledges[89].y - game->ledges[96].h - 20;
-	game->collectable.w = COLLACTABLE_SIZE;
-	game->collectable.h = COLLACTABLE_SIZE;
+	game->door.x = game->ledges[92].x + game->ledges[92].w / 3 -  DOOR_WIDTH/ 2;
+	game->door.y = game->ledges[92].y - game->ledges[92].h - 1;
+	game->door.w = DOOR_WIDTH;
+	game->door.h = DOOR_HEIGHT;
 
+	game->door1.x = game->ledges[89].x + game->ledges[89].w / 3 - DOOR_WIDTH / 2;
+	game->door1.y = game->ledges[89].y - game->ledges[89].h - 1;
+	game->door1.w = DOOR_WIDTH;
+	game->door1.h = DOOR_HEIGHT;
 }
 void initCollectableAboveLedge(GameState* game)
 {
@@ -304,7 +298,6 @@ void initCollectableAboveLedge(GameState* game)
 	game->collectable.y = game->ledges[96].y  - game->ledges[96].h - 20;
 	game->collectable.w = COLLACTABLE_SIZE;
 	game->collectable.h = COLLACTABLE_SIZE;
-	
 }
 // close program and keys 
 void processEvents(SDL_Window* window, GameState* game)
@@ -457,12 +450,11 @@ void process(GameState* game)
 	game->scrollX = -game->alice.x + WINDOW_W / 2;
 	if (game->scrollX > 0)
 		game->scrollX = 0;
-	int maxScrollX = -(WINDOW_W +384  - WINDOW_W);
+	int maxScrollX = -(WINDOW_W +400  - WINDOW_W);
 	if (game->scrollX < maxScrollX) {
 		game->scrollX = maxScrollX;
 	}
 	
-
 }
 
 int  isAliceOnTheFloor(object* alice)
@@ -483,7 +475,6 @@ int collide2d(float x1, float y1, float x2, float y2, float wt1, float ht1, floa
 // дотик до блоків 
 void collisionDetect(GameState* game)
 {
-
 	for (int i = 0; i < 100; i++)
 	{
 		float mw = 32, mh = 64;
@@ -493,8 +484,8 @@ void collisionDetect(GameState* game)
 		if (game->alice.x < 0) {
 			game->alice.x = 0;
 		}
-		if (game->alice.x + 32 > WINDOW_W + 384) {
-			game->alice.x = WINDOW_W + 384 - 32;
+		if (game->alice.x + 32 > WINDOW_W + 400) {
+			game->alice.x = WINDOW_W + 400 - 32;
 			
 		}
 		if (game->alice.y < 0) {
@@ -532,7 +523,6 @@ void collisionDetect(GameState* game)
 			}
 		}
 
-
 		if (my + mh > by && my < by + bh)
 		{
 			//rubbing against right edge
@@ -557,30 +547,31 @@ void collisionDetect(GameState* game)
 	}
 }
 
-
 void doRеnder(SDL_Renderer* renderer, GameState* game) {
 
-	SDL_SetRenderDrawColor(renderer, 164, 151, 227, 255);
-	SDL_RenderClear(renderer);
+	//SDL_SetRenderDrawColor(renderer, 164, 151, 227, 255);
+	//SDL_RenderClear(renderer);
+
+	SDL_RenderCopy(renderer, game->backgroundTexture, NULL, NULL);
 
 	for (int i = 0; i < 100; i++)
 	{
-		
 		SDL_Rect ledgeRect = { game->scrollX + game->ledges[i].x,game->ledges[i].y, game->ledges[i].w,game->ledges[i].h };
 		SDL_RenderCopy(renderer, game->tiles, NULL, &ledgeRect);
 	}
-
-	SDL_Rect DoorRect = { game->door.x, game->door.y, game->door.w, game->door.h };
+	SDL_Rect DoorRect = { game->scrollX + game->door.x, game->door.y, game->door.w, game->door.h };
 	SDL_RenderCopy(renderer, game->doorImage, NULL, &DoorRect);
+
+	SDL_Rect DoorRect1 = { game->scrollX + game->door1.x, game->door1.y, game->door1.w, game->door1.h };
+	SDL_RenderCopy(renderer, game->door1Image, NULL, &DoorRect1);
 
 	SDL_Rect rect = { game->scrollX + game->alice.x, game->alice.y, 32, 64 };
 	SDL_RenderCopyEx(renderer, game->aliceFrames[game->alice.animFrame],
 		NULL, &rect, 0, NULL, (game->alice.facingLeft == 0));
 
-		
 		renderCallectable(renderer, game);
 
-		//renderCounterText(game->counter, renderer);
+	//renderCounterText(renderer, game);
 	
 	SDL_RenderPresent(renderer);
 }
@@ -605,11 +596,22 @@ void renderDoor(SDL_Renderer* renderer, GameState* game)
 	}
 	else
 	{
-		SDL_Rect collectableRect = { game->scrollX + game->door.x, game->door.y, game->door.w, game->door.h };
-		SDL_RenderCopy(renderer, game->doorImage, NULL, &collectableRect);
+		SDL_Rect DoorleRect = { game->scrollX + game->door.x, game->door.y, game->door.w, game->door.h };
+		SDL_RenderCopy(renderer, game->doorImage, NULL, &DoorleRect);
+	}
+
+	if (game->door1.isCollected)
+	{
+		SDL_RenderCopy(renderer, game->door1Image, NULL, &(SDL_Rect){0, 0, 0, 0});
+	}
+	else
+	{
+		SDL_Rect Door1leRect = { game->scrollX + game->door1.x, game->door1.y, game->door1.w, game->door1.h };
+		SDL_RenderCopy(renderer, game->door1Image, NULL, &Door1leRect);
 	}
 }
-/*void renderCounterText(int counter, SDL_Renderer* renderer)
+
+/*void renderCounterText(SDL_Renderer* renderer, GameState* game)
 {
 	char text[20];
 	char counterText[2];
@@ -618,8 +620,8 @@ void renderDoor(SDL_Renderer* renderer, GameState* game)
 	SDL_Surface* surfaceMessage;
 	SDL_Texture* Message;
 
-	sprintf_s(counterText, "%d", counter);
-	sprintf_s(text, "%s %s", "items collected: ", counterText);
+	sprintf_s(counterText, "%d", game->counter);
+	sprintf_s(text, "%s  %s items collected:", counterText);
 	Sans = TTF_OpenFont("font.ttf", 12);
 	if (!Sans)
 		printf("%s", TTF_GetError());
@@ -632,7 +634,6 @@ void renderDoor(SDL_Renderer* renderer, GameState* game)
 
 	SDL_RenderCopy(renderer, Message, NULL, &(SDL_Rect){0, 0, 200, 50});
 }*/
-
 
 int main(int argc, char* args[]) {
 	GameState gameState;
@@ -658,13 +659,10 @@ int main(int argc, char* args[]) {
 	while (1) {
 		//Check for events
 		processEvents(window, &gameState);
-
 		process(&gameState);
 		collisionDetect(&gameState);
-
 		doRеnder(renderer, &gameState);
 
-		//don't burn up the CPU
 		SDL_Delay(16);
 	}
 
@@ -677,13 +675,15 @@ int main(int argc, char* args[]) {
 	SDL_DestroyTexture(gameState.aliceFrames[5]);
 	SDL_DestroyTexture(gameState.tiles);
 	SDL_DestroyTexture(gameState.doorImage);
-	//SDL_DestroyTexture(gameState.backgroundTexture);
+	SDL_DestroyTexture(gameState.door1Image);
+	SDL_DestroyTexture(gameState.backgroundTexture);
 
 	// Close and destroy the window
 	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(renderer);
 
 	// Clean up
+	TTF_Quit();
 	SDL_Quit();
 	return 0;
 
