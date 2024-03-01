@@ -19,6 +19,9 @@
 
 #define GRAVITY 0.35f;
 
+const int DOOR_HEIGHT = 68;
+const int DOOR_WIDTH = 52;
+
 typedef struct {
 	SDL_Texture* texture;
 	SDL_Rect rect;
@@ -53,7 +56,7 @@ typedef struct
 
 	Ledge ledges[100];
 	Door hole;
-
+	int levelcount;
 	SDL_Texture* aliceFrames[6];
 	SDL_Texture* tiles;
 
