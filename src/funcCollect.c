@@ -52,7 +52,7 @@ void DisplayLetterText(SDL_Renderer *renderer){
     int marginY = 100;
     SDL_Rect background;
     msg.text = "Привіт, Алісо! Ласкаво просимо до Країни Чудес! Ми вже чекаємо на тебе на нашому святковому чаюванні, але, здається, ми загубили кілька предметів. Знайди їх, будь ласка, щоб злий Оракл не вийшов на наш слід! Він може зловити тебе, будь обережною!";
-    Sans = TTF_OpenFont("../resource/fonts/font.ttf", 24);
+    Sans = TTF_OpenFont("./resource/fonts/font.ttf", 24);
     if(!Sans)
         printf("%s", TTF_GetError());
     //replace 1280 with window width
