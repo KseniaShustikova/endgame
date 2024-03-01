@@ -36,6 +36,11 @@ typedef struct
 	int animFrame, facingLeft, slowingDown;
 } object;
 
+typedef struct Door
+{
+	int x, y, w, h;
+	bool isOpen;
+} Door;
 typedef struct
 {
 	int x, y, w, h;
@@ -47,6 +52,7 @@ typedef struct
 	Button startButton, exitButton, volumeButton;
 
 	Ledge ledges[100];
+	Door hole;
 
 	SDL_Texture* aliceFrames[6];
 	SDL_Texture* tiles;
