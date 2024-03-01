@@ -104,5 +104,12 @@ void toggleSound();
 void handleEvents(SDL_Renderer* renderer, Button* startButton, Button* exitButton, Button* volumeButton, int* quit, int *start);
 void render(SDL_Renderer* renderer, SDL_Texture* backgroundTexture, Button* startButton, Button* exitButton, Button* volumeButton);
 void cleanup(SDL_Texture* startButtonTexture, SDL_Texture* exitButtonTexture, SDL_Texture* backgroundTexture, SDL_Texture* volumeOn, SDL_Texture* volumeOff, SDL_Renderer* renderer, SDL_Window* window);
+Collectable makeCollectable ( int x, int y, int width, int height);
+void SetCollectableImage(Collectable *element, SDL_Renderer *renderer, char* path);
+void SetCounterText(counter  *counter, SDL_Renderer *renderer );
+void renderCollectable (Collectable *element, SDL_Renderer *renderer, GameState *game,  int type);
+void displayText (SDL_Renderer *renderer, counter *counter);
+void DisplayLetterText(SDL_Renderer *renderer );
+void DisplayEndPicture(SDL_Renderer *renderer, char *path);
 
 #endif

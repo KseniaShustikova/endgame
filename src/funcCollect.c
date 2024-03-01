@@ -1,5 +1,5 @@
-#include "header.h"
-#include "resource/SDL_TTF/include/SDL2/SDL_ttf.h"
+#include "../inc/header.h"
+#include "../resourse/SDL_TTF/include/SDL2/SDL_ttf.h"
 // function to make a new collectable
 Collectable makeCollectable ( int x, int y, int width, int height) {
     Collectable collectable;
@@ -27,7 +27,7 @@ void SetCounterText(counter  *counter, SDL_Renderer *renderer ){
     int texH = 0;
     sprintf(counterText,"%d",counter->counter);
     sprintf(text, "%s %s", "кількість зібраних предметів: ", counterText); 
-    Sans = TTF_OpenFont("./resource/fonts/font.ttf", 24);
+    Sans = TTF_OpenFont("../resourse/fonts/font.ttf", 24);
     if(!Sans)
         printf("%s", TTF_GetError());
     surfaceMessage =  TTF_RenderUTF8_Blended_Wrapped(Sans, text, black, 400);
@@ -52,7 +52,7 @@ void DisplayLetterText(SDL_Renderer *renderer){
     int marginY = 100;
     SDL_Rect background;
     msg.text = "Привіт, Алісо! Ласкаво просимо до Країни Чудес! Ми вже чекаємо на тебе на нашому святковому чаюванні, але, здається, ми загубили кілька предметів. Знайди їх, будь ласка, щоб злий Оракл не вийшов на наш слід! Він може зловити тебе, будь обережною!\0";
-    Sans = TTF_OpenFont("./resource/fonts/font.ttf", 24);
+    Sans = TTF_OpenFont("../resourse/fonts/font.ttf", 24);
     if(!Sans)
         printf("%s", TTF_GetError());
     //replace 1280 with window width
