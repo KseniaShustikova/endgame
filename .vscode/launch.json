@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Endgame",
-      "program": "c:/Endgame/build/Debug/outDebug",
+      "cwd": "c:/endgame-vviun/src",
+      "program": "c:/endgame-vviun/src/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
