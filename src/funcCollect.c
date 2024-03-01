@@ -1,5 +1,5 @@
-#include "./collectable.h"
-
+#include "header.h"
+#include "resource/SDL_TTF/include/SDL2/SDL_ttf.h"
 // function to make a new collectable
 Collectable makeCollectable ( int x, int y, int width, int height) {
     Collectable collectable;
@@ -51,7 +51,7 @@ void DisplayLetterText(SDL_Renderer *renderer){
     int marginX = 150;
     int marginY = 100;
     SDL_Rect background;
-    msg.text = "Привіт, Алісо! Ласкаво просимо до Країни Чудес! Ми вже чекаємо на тебе на нашому святковому чаюванні, але, здається, ми загубили кілька предметів. Знайди їх, будь ласка, щоб злий Оракл не вийшов на наш слід! Він може зловити тебе, будь обережною!";
+    msg.text = "Привіт, Алісо! Ласкаво просимо до Країни Чудес! Ми вже чекаємо на тебе на нашому святковому чаюванні, але, здається, ми загубили кілька предметів. Знайди їх, будь ласка, щоб злий Оракл не вийшов на наш слід! Він може зловити тебе, будь обережною!\0";
     Sans = TTF_OpenFont("./resource/fonts/font.ttf", 24);
     if(!Sans)
         printf("%s", TTF_GetError());
@@ -88,12 +88,13 @@ void DisplayEndPicture(SDL_Renderer *renderer, char *path){
 }
 
 // to render the collectable if the player hasn't collected it yet
-void renderCollectable (Collectable *element, SDL_Renderer *renderer, SDL_Rect *player, int type ){
-    SDL_bool collision = SDL_HasIntersection(player, &element->rect);
+void renderCollectable (Collectable *element, SDL_Renderer *renderer, GameState* game, int type ){
+    SDL_bool collision = SDL_HasIntersection(&(SDL_Rect){game->alice.x, game->alice.y, 42, 74}, &element->rect);
+
     if(collision){
         element->isCollected = true;
         element->rect = (SDL_Rect){0, 0, 0, 0};
-        free(element->image);
+        // free(element->image);
         if(type == 1)
             collectableCounter.counter++;
         if(type == 2)

@@ -1,4 +1,5 @@
-#include "../inc/header.h"
+#include "./header.h"
+#include "./collectable.h"
 
 SDL_Texture* loadTexture(SDL_Renderer* renderer, const char* filename) {
     SDL_Surface* surface = IMG_Load(filename);
@@ -25,7 +26,7 @@ void loadGame(GameState* game, const char* backgroundFile, const char* musicFile
 
     //Load images and create rendering textures from them
 
-    surface = IMG_Load("../resourse/Alice/Alice_stand.png");
+    surface = IMG_Load("./resourse/Alice/Alice_stand.png");
     if (surface == NULL)
     {
         printf("Cannot find Alice_stand.png!\n\n");
@@ -35,7 +36,7 @@ void loadGame(GameState* game, const char* backgroundFile, const char* musicFile
     game->aliceFrames[0] = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
 
-    surface = IMG_Load("../resourse/Alice/Alice_1.png");
+    surface = IMG_Load("./resourse/Alice/Alice_1.png");
     if (surface == NULL)
     {
         printf("Cannot find Alice_1.png!\n\n");
@@ -45,7 +46,7 @@ void loadGame(GameState* game, const char* backgroundFile, const char* musicFile
     game->aliceFrames[1] = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
 
-    surface = IMG_Load("../resourse/Alice/Alice_2.png");
+    surface = IMG_Load("./resourse/Alice/Alice_2.png");
     if (surface == NULL)
     {
         printf("Cannot find Alice_2.png!\n\n");
@@ -55,7 +56,7 @@ void loadGame(GameState* game, const char* backgroundFile, const char* musicFile
     game->aliceFrames[2] = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
 
-    surface = IMG_Load("../resourse/Alice//Alice_3.png");
+    surface = IMG_Load("./resourse/Alice//Alice_3.png");
     if (surface == NULL)
     {
         printf("Cannot find Alice_3.png!\n\n");
@@ -65,7 +66,7 @@ void loadGame(GameState* game, const char* backgroundFile, const char* musicFile
     game->aliceFrames[3] = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
 
-    surface = IMG_Load("../resourse/Alice//Alice_4.png");
+    surface = IMG_Load("./resourse/Alice//Alice_4.png");
     if (surface == NULL)
     {
         printf("Cannot find Alice_4.png!\n\n");
@@ -75,7 +76,7 @@ void loadGame(GameState* game, const char* backgroundFile, const char* musicFile
     game->aliceFrames[4] = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
 
-    surface = IMG_Load("../resourse/Alice//Alice_J.png");
+    surface = IMG_Load("./resourse/Alice//Alice_J.png");
     if (surface == NULL)
     {
         printf("Cannot find Alice_J.png!\n\n");
@@ -85,7 +86,7 @@ void loadGame(GameState* game, const char* backgroundFile, const char* musicFile
     game->aliceFrames[5] = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
 
-    surface = IMG_Load("../resourse/textures/3-Tile.png");
+    surface = IMG_Load("./resourse/textures/3-Tile.png");
     game->tiles = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
 
@@ -167,17 +168,17 @@ void handleEvents(SDL_Renderer* renderer, Button* startButton, Button* exitButto
             if (SDL_PointInRect(&(SDL_Point) { mouseX, mouseY }, & volumeButton->rect)) {
                 toggleSound();
                 if (soundOn) {
-                    volumeButton->texture = loadTexture(renderer, "../resourse/buttons/vol1.bmp");
+                    volumeButton->texture = loadTexture(renderer, "./resourse/buttons/vol1.bmp");
                 }
                 else {
-                    volumeButton->texture = loadTexture(renderer, "../resourse/buttons/vol2.bmp");
+                    volumeButton->texture = loadTexture(renderer, "./resourse/buttons/vol2.bmp");
                 }
             }
         }
     }
 }
 
-void doRender(SDL_Renderer* renderer, GameState* game)
+void doRender(SDL_Renderer* renderer, GameState* game, Collectable *letter)
 {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
@@ -194,7 +195,9 @@ void doRender(SDL_Renderer* renderer, GameState* game)
     SDL_Rect rect = { game->alice.x, game->alice.y, 42, 74 };
     SDL_RenderCopyEx(renderer, game->aliceFrames[game->alice.animFrame],
         NULL, &rect, 0, NULL, (game->alice.facingLeft == 0));
-
+    renderCollectable(letter, renderer, game, type_letter);
+    if(msg.isOn)
+        DisplayLetterText(renderer);
     //We are done drawing, "present" or show to the screen what we've drawn
     SDL_RenderPresent(renderer);
 }
