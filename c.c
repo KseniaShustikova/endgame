@@ -542,7 +542,7 @@ void collisionDetect(GameState* game)
 
 void doRender(SDL_Renderer* renderer, GameState* game)
 {
-	SDL_Surface* backgroundSurface = IMG_Load("images/level3.bmp");
+	SDL_Surface* backgroundSurface = IMG_Load("images/level2.bmp");
         if (backgroundSurface == NULL) {
         printf("not: %s\n", IMG_GetError());
         SDL_Quit();
