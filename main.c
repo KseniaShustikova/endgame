@@ -554,7 +554,9 @@ void doRender(SDL_Renderer* renderer, GameState* game)
 
 	renderCallectable(renderer, game);
 
-	renderCounterText(game->counter, renderer);
+	if (game->counter > 0) {
+		renderCounterText(game->counter, renderer);
+	}
 	//We are done drawing, "present" or show to the screen what we've drawn
 	SDL_RenderPresent(renderer);
 }
@@ -597,4 +599,3 @@ void renderCounterText(int counter, SDL_Renderer* renderer)
 
 	SDL_RenderCopy(renderer, Message, NULL, &(SDL_Rect){0, 0, 200, 50});
 }
-
