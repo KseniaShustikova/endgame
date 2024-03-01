@@ -47,8 +47,6 @@ typedef struct Collectable
 	bool isCollected;
 } Collectable;
 
-
-
 typedef struct
 {
 	int time;
@@ -76,6 +74,8 @@ typedef struct
 
 } GameState;
 
+void loadlevel3(GameState* game,SDL_Window* wind, SDL_Renderer* renderer,
+char* path,float x1, float y1, float x2, float y2, float wt1, float ht1, float wt2, float ht2, object* alice);
 void loadGame(GameState* game);
 void processEvents(SDL_Window* wind, GameState* game);
 void doRender(SDL_Renderer* renderer, GameState* game);
