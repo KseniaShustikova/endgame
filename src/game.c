@@ -18,6 +18,9 @@ SDL_Texture* loadTexture(SDL_Renderer* renderer, const char* filename) {
 
     return texture;
 }
+const int LEDGE_HEIGHT = 78;
+const int LEDGE_WIDTH = 250;
+const int COLLACTABLEgcc = 48;
 
 void loadGame(GameState* game, const char* backgroundFile, const char* musicFile)
 {
@@ -93,6 +96,10 @@ void loadGame(GameState* game, const char* backgroundFile, const char* musicFile
     game->backgroundTexture = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
 
+    surface = IMG_Load("../resourse/items/obj.letter.png");
+	game->collactbleImage = SDL_CreateTextureFromSurface(game->renderer, surface);
+	SDL_FreeSurface(surface);
+
     if (surface == NULL)
     {
         printf("Cannot find background image: %s\n\n", backgroundFile);
@@ -129,7 +136,20 @@ void loadGame(GameState* game, const char* backgroundFile, const char* musicFile
         game->ledges[i].x = i * 200;
         game->ledges[i].y = 650;
     }
+
+    game->counter = 0;
+	game->collectable.isCollected = false;
+
+	initCollectableAboveLedge(game);
    
+}
+
+void initCollectableAboveLedge(GameState* game)
+{
+	game->collectable.x = game->ledges[99].x + LEDGE_WIDTH / 2 - COLLACTABLE_SIZE / 2;
+	game->collectable.y = game->ledges[99].y - LEDGE_HEIGHT - 20;
+	game->collectable.w = COLLACTABLE_SIZE;
+	game->collectable.h = COLLACTABLE_SIZE;
 }
 
 void toggleSound() {
@@ -195,8 +215,47 @@ void doRender(SDL_Renderer* renderer, GameState* game)
     SDL_RenderCopyEx(renderer, game->aliceFrames[game->alice.animFrame],
         NULL, &rect, 0, NULL, (game->alice.facingLeft == 0));
 
+    renderCallectable(renderer, game);
+    renderCounterText(game->counter, renderer);
     //We are done drawing, "present" or show to the screen what we've drawn
     SDL_RenderPresent(renderer);
+}
+void renderCallectable(SDL_Renderer* renderer, GameState* game)
+{
+	if (game->collectable.isCollected)
+	{
+		SDL_RenderCopy(renderer, game->collactbleImage, NULL, &(SDL_Rect){0, 0, 0, 0});
+	}
+	else
+	{
+		SDL_Rect collectableRect = { game->collectable.x, game->collectable.y, game->collectable.w, game->collectable.h };
+		SDL_RenderCopy(renderer, game->collactbleImage, NULL, &collectableRect);
+	}
+}
+
+// to set the text on top of the counter
+void renderCounterText(int counter, SDL_Renderer* renderer)
+{
+	char text[20];
+	char counterText[2];
+	SDL_Color white = { 255, 255, 255,255 };
+	TTF_Font* Sans;
+	SDL_Surface* surfaceMessage;
+	SDL_Texture* Message;
+
+	sprintf(counterText, "%d", counter);
+	sprintf(text, "%s %s", "items collected: ", counterText);
+	Sans = TTF_OpenFont("../resourse/fonts/font.ttf", 12);
+	if (!Sans)
+		printf("%s", TTF_GetError());
+	surfaceMessage = TTF_RenderText_Solid(Sans, text, white);
+	if (!surfaceMessage)
+		printf("%s", TTF_GetError());
+	Message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
+	if (!Message)
+		printf("%s", TTF_GetError());
+
+	SDL_RenderCopy(renderer, Message, NULL, &(SDL_Rect){0, 0, 200, 50});
 }
 
 int processEvents(SDL_Window* window, GameState* game)
@@ -299,6 +358,10 @@ void render(SDL_Renderer* renderer, SDL_Texture* backgroundTexture, Button* star
     SDL_RenderCopy(renderer, volumeButton->texture, NULL, &volumeButton->rect);
 
     SDL_RenderPresent(renderer);
+}
+int collide2d(float x1, float y1, float x2, float y2, float wt1, float ht1, float wt2, float ht2)
+{
+	return (!((x1 > (x2 + wt2)) || (x2 > (x1 + wt1)) || (y1 > (y2 + ht2)) || (y2 > (y1 + ht1))));
 }
 
 void collisionDetect(GameState* game)
@@ -409,6 +472,23 @@ void process(GameState* game)
     {
         alice->animFrame = 0;
     }
+
+    Collectable* collectable = &game->collectable;
+	if (collide2d(
+		alice->x,
+		alice->y,
+		collectable->x,
+		collectable->y,
+		alice->dx,
+		alice->dy,
+		collectable->w,
+		collectable->h))
+	{
+		collectable->isCollected = true;
+		collectable->x = 0;
+		collectable->y = 0;
+		game->counter++;
+	}
 
 
 
