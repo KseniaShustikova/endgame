@@ -89,6 +89,9 @@ void loadGame(GameState* game)
     game->tiles = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
 
+    surface = IMG_Load("level0/level0_hole.bmp");
+    game->hole = SDL_CreateTextureFromSurface(game->renderer, surface);
+    SDL_FreeSurface(surface);
 
 
     game->alice.x = 320 - 40;
@@ -115,6 +118,11 @@ void loadGame(GameState* game)
 
     game->ledges[98].x = 350;
     game->ledges[98].y = 350;
+
+    game->hole.x = game->ledges[98].x + game->ledges[98].w / 2 - DOOR_WIDTH / 2;
+    game->hole.y = game->ledges[98].y - game->ledges[98].h - 1;
+    game->hole.w = DOOR_WIDTH;
+    game->hole.h = DOOR_HEIGHT;
 }
 
 void toggleSound() {
@@ -378,12 +386,27 @@ void process(GameState* game)
     {
         alice->animFrame = 0;
     }
+Door* hole = &game->hole;
 
-
-
+if (collide2d(
+	alice->x,
+	alice->y,
+	hole->x,
+	hole->y,
+	alice->dx,
+	alice->dy,
+	hole->w,
+	hole->h))
+{
+	door1->isOpen = true;
+	levelcount++;
+}
     alice->dy += GRAVITY;
 }
-
+int collide2d(float x1, float y1, float x2, float y2, float wt1, float ht1, float wt2, float ht2)
+{
+	return (!((x1 > (x2 + wt2)) || (x2 > (x1 + wt1)) || (y1 > (y2 + ht2)) || (y2 > (y1 + ht1))));
+}
 void cleanup(SDL_Texture* startButtonTexture, SDL_Texture* exitButtonTexture, SDL_Texture* backgroundTexture, SDL_Texture* volumeOn, SDL_Texture* volumeOff, SDL_Renderer* renderer, SDL_Window* window) {
     Mix_FreeMusic(backgroundMusic);
     Mix_CloseAudio();
