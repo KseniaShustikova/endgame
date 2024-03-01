@@ -11,7 +11,7 @@ int main() {
 	SDL_Window* window = SDL_CreateWindow("EndGame", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_W, WINDOW_H, SDL_WINDOW_SHOWN);
 	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, 0);
 	game.renderer = renderer;
-	SDL_Surface* temp_surf = NULL;
+	//SDL_Surface* temp_surf = NULL;
 	SDL_Texture* backgroundTexture = loadTexture(renderer, "./resourse/menu_b.bmp");
 	const char* gameBackground = "./resourse/level0/level0.bmp";
     const char* gameMusic = "./resourse/audio/level0.wav";
@@ -53,7 +53,7 @@ int main() {
 
 	int quit = 0;
 	int start = 0;
-	SDL_Event e;
+	//SDL_Event e;
 
 	while (!quit && !start) {
 		handleEvents(renderer, &game.startButton, &game.exitButton, &game.volumeButton, &quit, &start);
