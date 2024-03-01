@@ -188,7 +188,7 @@ void doRender(SDL_Renderer* renderer, GameState* game)
     }
 	
 SDL_Rect HoleRect = { game->hole.x, game->hole.y, game->hole.w, game->hole.h };
-SDL_RenderCopy(renderer, game->hole, NULL, &HoleRect);
+SDL_RenderCopy(renderer, game-> holetexture, NULL, &HoleRect);
 	
     //draw a rectangle at man's position
     SDL_Rect rect = { game->alice.x, game->alice.y, 32, 64 };
@@ -410,7 +410,7 @@ int collide2d(float x1, float y1, float x2, float y2, float wt1, float ht1, floa
 {
 	return (!((x1 > (x2 + wt2)) || (x2 > (x1 + wt1)) || (y1 > (y2 + ht2)) || (y2 > (y1 + ht1))));
 }
-void cleanup(SDL_Texture* startButtonTexture, SDL_Texture* exitButtonTexture, SDL_Texture* backgroundTexture, SDL_Texture* volumeOn, SDL_Texture* volumeOff,SDL_Texture* hole, SDL_Renderer* renderer, SDL_Window* window) {
+void cleanup(SDL_Texture* startButtonTexture, SDL_Texture* exitButtonTexture, SDL_Texture* backgroundTexture, SDL_Texture* volumeOn, SDL_Texture* volumeOff,SDL_Texture*  holetexture, SDL_Renderer* renderer, SDL_Window* window) {
     Mix_FreeMusic(backgroundMusic);
     Mix_CloseAudio();
     SDL_DestroyTexture(startButtonTexture);
@@ -418,7 +418,7 @@ void cleanup(SDL_Texture* startButtonTexture, SDL_Texture* exitButtonTexture, SD
     SDL_DestroyTexture(backgroundTexture);
     SDL_DestroyTexture(volumeOn);
     SDL_DestroyTexture(volumeOff);
-    SDL_DestroyTexture(hole);
+    SDL_DestroyTexture( holetexture);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
