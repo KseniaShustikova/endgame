@@ -5,12 +5,14 @@ int main() {
 
 	GameState game;
 
+	TTF_Init();
 	SDL_Init(SDL_INIT_VIDEO);
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
 
 	SDL_Window* window = SDL_CreateWindow("EndGame", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_W, WINDOW_H, SDL_WINDOW_SHOWN);
 	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, 0);
 	game.renderer = renderer;
+	
 	SDL_Surface* temp_surf = NULL;
 	SDL_Texture* backgroundTexture = loadTexture(renderer, "../resourse/menu_b.bmp");
 	const char* gameBackground = "../resourse/level0/level0.bmp";
