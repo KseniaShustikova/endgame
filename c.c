@@ -197,7 +197,7 @@ void loadGame(GameState* game)
 	game->tiles = SDL_CreateTextureFromSurface(game->renderer, surface);
 	SDL_FreeSurface(surface);
 
-	surface = IMG_Load("images/dish.bmp");
+	surface = IMG_Load("images/cookie2.bmp");
 	game->collactbleImage = SDL_CreateTextureFromSurface(game->renderer, surface);
 	SDL_FreeSurface(surface);
 
