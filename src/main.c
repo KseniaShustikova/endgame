@@ -12,17 +12,17 @@ int main() {
 	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, 0);
 	game.renderer = renderer;
 	SDL_Surface* temp_surf = NULL;
-	SDL_Texture* backgroundTexture = loadTexture(renderer, "../resourse/menu_b.bmp");
-	const char* gameBackground = "../resourse/level0/level0.bmp";
-    const char* gameMusic = "../resourse/audio/level0.wav";
+	SDL_Texture* backgroundTexture = loadTexture(renderer, "./resourse/menu_b.bmp");
+	const char* gameBackground = "./resourse/level0/level0.bmp";
+    const char* gameMusic = "./resourse/audio/level0.wav";
 	SDL_RenderClear(renderer);
 	SDL_RenderPresent(renderer);
 	SDL_Delay(300);
 
-	SDL_Texture* startButtonTexture = loadTexture(renderer, "../resourse/buttons/start.bmp");
-	SDL_Texture* exitButtonTexture = loadTexture(renderer, "../resourse/buttons/quit.bmp");
-	SDL_Texture* volumeOn = loadTexture(renderer, "../resourse/buttons/vol1.bmp");
-	SDL_Texture* volumeOff = loadTexture(renderer, "../resourse/buttons/vol2.bmp");
+	SDL_Texture* startButtonTexture = loadTexture(renderer, "./resourse/buttons/start.bmp");
+	SDL_Texture* exitButtonTexture = loadTexture(renderer, "./resourse/buttons/quit.bmp");
+	SDL_Texture* volumeOn = loadTexture(renderer, "./resourse/buttons/vol1.bmp");
+	SDL_Texture* volumeOff = loadTexture(renderer, "./resourse/buttons/vol2.bmp");
 
 	
 	game.startButton.texture = startButtonTexture;
@@ -43,7 +43,7 @@ int main() {
 	game.volumeButton.rect.w = 45;
 	game.volumeButton.rect.h = 45;
 
-	backgroundMusic = Mix_LoadMUS("../resourse/audio/menu.wav");
+	backgroundMusic = Mix_LoadMUS("./resourse/audio/menu.wav");
 	if (!backgroundMusic) {
 		printf("Failed to load background music: %s\n", Mix_GetError());
 	}
@@ -67,7 +67,7 @@ int main() {
 		int done = 0;
 		//ADDED CODE 
 		Collectable letter = makeCollectable(450, 300, 64, 64);
-    	SetCollectableImage(&letter, renderer, "../resource/images/obj.letter.png");
+    	SetCollectableImage(&letter, renderer, "./resource/images/obj.letter.png");
 		//Event loop
 		while (!done)
 		{
