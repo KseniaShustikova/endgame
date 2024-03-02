@@ -108,6 +108,7 @@ typedef struct
 } GameState;
 
 counter collectableCounter;
+ins isEnd = false;
 message msg;
 
 int isAliceRichedCollectable(object* alice, Collectable* collectable);
