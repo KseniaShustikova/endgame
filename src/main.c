@@ -57,7 +57,7 @@ int main(int argc, char** argv) {
 	int start = 0;
 	SDL_Event e;
 	Collectable letter = makeCollectable(490, 530, 64, 64);
-    SetCollectableImage(&letter, renderer, "../resource/items/obj.letter.png");
+    SetCollectableImage(&letter, renderer, "../resource/items/letter.bmp");
 	while (!quit && !start) {
 		handleEvents(renderer, &game.startButton, &game.exitButton, &game.volumeButton, &quit, &start);
 		render(renderer, backgroundTexture, &game.startButton, &game.exitButton, &game.volumeButton);
