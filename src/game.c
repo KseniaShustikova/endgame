@@ -779,6 +779,49 @@ void diana_process(GameState* game)
 
 }
 
+void DisplayEndPicture(SDL_Renderer* renderer, char* path, GameState* game) {
+
+    SDL_Surface* surface;
+    surface = IMG_Load(path);
+    if (!surface) {
+        printf("Error loading image: %s\n", IMG_GetError());
+        return;
+    }
+    game->texture = SDL_CreateTextureFromSurface(renderer, surface);
+    if (SDL_GetError() && SDL_GetError()[0] != '\0') {
+        printf("SDL Render Error: %s\n", SDL_GetError());
+    }
+    SDL_FreeSurface(surface);
+
+    SDL_Rect endimg = { 0, 0, 1280, 720 };
+    SDL_RenderCopy(renderer, game->texture, NULL, NULL);
+}
+bool isAliceRichedThefinalDoor(object* alice, Door* door)
+{
+    return collide2d(
+        alice->x,
+        alice->y,
+        door->x,
+        door->y,
+        alice->dx,
+        alice->dy,
+        door->w,
+        door->h);
+}
+
+bool isAliceRichedTheDoor1(object* alice, Door* door1)
+{
+    return collide2d(
+        alice->x,
+        alice->y,
+        door1->x,
+        door1->y,
+        alice->dx,
+        alice->dy,
+        door1->w,
+        door1->h);
+}
+
 void diana_doRender(SDL_Renderer* renderer, GameState* game)
 {
     //set the drawing color to blue
@@ -804,11 +847,12 @@ void diana_doRender(SDL_Renderer* renderer, GameState* game)
 
     for (int i = 0; i < 100; i++)
     {
-        SDL_Rect ledgeRect = { game->ledges[i].x, game->ledges[i].y, game->ledges[i].w, game->ledges[i].h };
+        SDL_Rect ledgeRect = { game->scrollX + game->ledges[i].x, game->ledges[i].y, game->ledges[i].w, game->ledges[i].h };
         SDL_RenderCopy(renderer, game->tiles, NULL, &ledgeRect);
     }
 
     SDL_Rect DoorRect = { game->door.x, game->door.y, game->door.w, game->door.h };
+    SDL_Rect Door1Rect = { game->door1.x, game->door1.y, game->door1.w, game->door1.h };
     if (game->levelCounter == 3)
     {
         SDL_RenderCopy(renderer, game->doorImageLevel3, NULL, &DoorRect);
@@ -819,10 +863,11 @@ void diana_doRender(SDL_Renderer* renderer, GameState* game)
     }
 
     //draw a rectangle at man's position
-    SDL_Rect rect = { game->alice.x, game->alice.y, 42, 74 };
+    SDL_Rect rect = { game->scrollX + game->alice.x, game->alice.y, 32, 64 };
     SDL_RenderCopyEx(renderer, game->aliceFrames[game->alice.animFrame],
         NULL, &rect, 0, NULL, (game->alice.facingLeft == 0));
 
+        
     renderCallectable(renderer, game);
     if (game->collactableCounter > 0)
     {
@@ -866,6 +911,8 @@ int isAliceRichedCollectable(object* alice, Collectable* collectable)
         collectable->w,
         collectable->h);
 }
+
+
 
 bool isAliceRichedTheDoor(object* alice, Door* door)
 {
@@ -1065,6 +1112,7 @@ void initLevel2Collectable(GameState* game)
     game->collectable.y = 97;
     game->collectable.w = 32;
     game->collectable.h = 32;
+    
 }
 
 void renderCallectable(SDL_Renderer* renderer, GameState* game)
@@ -1104,23 +1152,6 @@ void renderCounterText(int counter, SDL_Renderer* renderer)
     SDL_RenderCopy(renderer, Message, NULL, &(SDL_Rect){0, 0, 200, 50});
 }
 
-void DisplayEndPicture(SDL_Renderer* renderer, char* path, GameState* game) {
-
-    SDL_Surface* surface;
-    surface = IMG_Load(path);
-    if (!surface) {
-        printf("Error loading image: %s\n", IMG_GetError());
-        return;
-    }
-    game->texture = SDL_CreateTextureFromSurface(renderer, surface);
-    if (SDL_GetError() && SDL_GetError()[0] != '\0') {
-        printf("SDL Render Error: %s\n", SDL_GetError());
-    }
-    SDL_FreeSurface(surface);
-
-    SDL_Rect endimg = { 1, 1, 1280, 720 };
-    SDL_RenderCopy(renderer, game->texture, NULL, &endimg);
-}
 
 //useful utility function to see if two rectangles are colliding at all
 int collide2d(float x1, float y1, float x2, float y2, float wt1, float ht1, float wt2, float ht2)
