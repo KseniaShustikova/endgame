@@ -81,8 +81,9 @@ typedef struct
 	object alice;
 	Button startButton, exitButton, volumeButton;
 	Ledge ledges[100];
-
+	Door door1;
 	Door door;
+	float scrollX;
 
 	Collectable collectable;
 	int collactableCounter;
@@ -112,9 +113,13 @@ message msg;
 
 int isAliceRichedCollectable(object* alice, Collectable* collectable);
 bool isAliceRichedTheDoor(object* alice, Door* door);
+bool isAliceRichedTheDoor1(object* alice, Door* door1);
+
 void clearLedges(GameState* game);
 void initLevel2Door(GameState* game);
+void initLevel1Collectable(GameState* game);
 void initLevel2Collectable(GameState* game);
+void initLevel3Collectable(GameState* game);
 void initLevel3Ledges(GameState* game);
 void initLevel2Ledges(GameState* game);
 void renderCallectable(SDL_Renderer* renderer, GameState* game);
