@@ -3,8 +3,8 @@
 int main() {
 
 	GameState game;
-	
 	TTF_Init();
+	
 	SDL_Init(SDL_INIT_VIDEO);
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
 
