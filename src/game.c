@@ -305,7 +305,7 @@ void load_lvl_1(GameState* game, const char* musicFile)
     game->doorImageLevel3 = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
 
-    surface = IMG_Load("../resource/items/cake.png");
+    surface = IMG_Load("../resource/items/cake.bmp");
     game->collactbleImage = SDL_CreateTextureFromSurface(game->renderer, surface);
     SDL_FreeSurface(surface);
 
