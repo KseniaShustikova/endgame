@@ -1,0 +1,94 @@
+//add
+//in gamestate
+Door door1;
+bool isAliceRichedThefinalDoor(object* alice, Door* door)
+{
+    return collide2d(
+        alice->x,
+        alice->y,
+        door->x,
+        door->y,
+        alice->dx,
+        alice->dy,
+        door->w,
+        door->h);
+}
+
+bool isAliceRichedTheDoor1(object* alice, Door* door1)
+{
+    return collide2d(
+        alice->x,
+        alice->y,
+        door1->x,
+        door1->y,
+        alice->dx,
+        alice->dy,
+        door1->w,
+        door1->h);
+}
+
+//dianas process 
+    //added
+    if (isAliceRichedTheDoor1(object * alice, Door * door1))
+    {
+        teleportAliceToStartPosition(alice);
+    }
+
+    if (isAliceRichedThefinalDoor(object * alice, Door * door))
+    {
+        game->levelCounter++;
+        
+    }
+    if (game->levelCounter == 2)
+    {
+        clearLedges(game);
+        initLevel2Ledges(game);
+        initLevel2Collectable(game);
+        initLevel2Door(game);
+    }
+    else if (game->levelCounter == 3)
+    {
+        clearLedges(game);
+        initLevel3Ledges(game);
+        game->collectable.x = game->ledges[96].x + game->ledges[96].w / 2 - 48 / 2;
+        game->collectable.y = game->ledges[96].y - game->ledges[96].h - 20;
+        game->collectable.w = 32;
+        game->collectable.h = 32;
+
+        game->door.x = game->ledges[92].x + game->ledges[92].w / 3 - 48 / 2;
+        game->door.y = game->ledges[92].y - game->ledges[92].h - 1;
+        game->door.w = 48;
+        game->door.h = 64;
+
+        game->door1.x = game->ledges[89].x + game->ledges[89].w / 3 - 48/ 2;
+        game->door1.y = game->ledges[89].y - game->ledges[89].h - 1;
+        game->door1.w = 48;
+        game->door1.h = 64;
+        SDL_Surface* surface = IMG_Load("../resource/items/tea.bmp");
+        game->collactbleImage = SDL_CreateTextureFromSurface(game->renderer, surface);
+        SDL_FreeSurface(surface);
+
+    }
+    else if (game->levelCounter == 4)
+    {
+        game->isEnd = true;
+    }
+    alice->dy += GRAVITY;
+
+}
+
+
+//in void diana_doRender(SDL_Renderer* renderer, GameState* game)
+
+ SDL_Rect DoorRect = { game->door.x, game->door.y, game->door.w, game->door.h };
+ SDL_Rect Door1Rect = { game->door1.x, game->door1.y, game->door1.w, game->door1.h };
+
+ if (game->levelCounter == 3)
+ {
+     SDL_RenderCopy(renderer, game->doorImageLevel3, NULL, &DoorRect);
+     SDL_RenderCopy(renderer, game->doorImage, NULL, &Door1Rect);
+ }
+ else
+ {
+     SDL_RenderCopy(renderer, game->doorImage, NULL, &DoorRect);
+ }
