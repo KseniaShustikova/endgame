@@ -95,7 +95,7 @@ void DisplayLetterText(SDL_Renderer *renderer){
     Sans = TTF_OpenFont("./resource/fonts/font.ttf", 24);
     if(!Sans)
         printf("%s", TTF_GetError());
-    //replace 1280 with window width
+
     surfaceMessage =  TTF_RenderUTF8_Blended_Wrapped(Sans, msg.text, black, 1280-marginX);
     if(!surfaceMessage)
         printf("%s", TTF_GetError()); 
@@ -104,7 +104,7 @@ void DisplayLetterText(SDL_Renderer *renderer){
         printf("%s", TTF_GetError());
     msg.texture = texture;
     SDL_QueryTexture(texture, NULL, NULL, &texW, &texH);
-    //replace 720 with window height
+   
     msg.rect = (SDL_Rect){marginX, 720-marginY, texW - marginX, texH};
     background = (SDL_Rect){marginX, 720-marginY, texW - marginX, texH};
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
@@ -117,7 +117,7 @@ void load_lvl_0(GameState* game, const char* backgroundFile, const char* musicFi
 {
     SDL_Surface* surface = NULL;
 
-    //Load images and create rendering textures from them
+
 
     surface = IMG_Load("./resource/Alice/Alice_stand.png");
     if (surface == NULL)
@@ -215,7 +215,6 @@ void load_lvl_0(GameState* game, const char* backgroundFile, const char* musicFi
 
     game->time = 0;
 
-    //init ledges
     for (int i = 0; i < 100; i++)
     {
         game->ledges[i].w = 250;
@@ -230,7 +229,6 @@ void load_lvl_1(GameState* game, const char* musicFile)
 {
     SDL_Surface* surface = NULL;
 
-    //Load images and create rendering textures from them
 
     surface = IMG_Load("./resource/Alice/Alice_stand.png");
     if (surface == NULL)
@@ -349,7 +347,7 @@ void load_lvl_1(GameState* game, const char* musicFile)
     game->time = 0;
     game->isEnd = false;
 
-    //init ledges
+    
     for (int i = 0; i < 100; i++)
     {
         game->ledges[i].w = 256;
@@ -454,7 +452,6 @@ void doRender(SDL_Renderer* renderer, GameState* game, Collectable *letter)
         SDL_RenderCopy(renderer, game->tiles, NULL, &ledgeRect);
     }
 
-    //draw a rectangle at man's position
     SDL_Rect rect = { game->alice.x, game->alice.y, 42, 74 };
     SDL_RenderCopyEx(renderer, game->aliceFrames[game->alice.animFrame],
         NULL, &rect, 0, NULL, (game->alice.facingLeft == 0));
@@ -462,7 +459,7 @@ void doRender(SDL_Renderer* renderer, GameState* game, Collectable *letter)
     renderCollectable(letter, renderer, game, type_letter);
     if(msg.isOn)
         DisplayLetterText(renderer);
-    //We are done drawing, "present" or show to the screen what we've drawn
+   
     SDL_RenderPresent(renderer);
 }
 
@@ -651,10 +648,9 @@ void collisionDetect(GameState* game)
 
 void process(GameState* game)
 {
-    //add time
+   
     game->time++;
 
-    //man movement
     object* alice = &game->alice;
     alice->x += alice->dx;
     alice->y += alice->dy;
@@ -689,10 +685,9 @@ void process(GameState* game)
 
 void diana_process(GameState* game)
 {
-    //add time
+
     game->time++;
 
-    //man movement
     object* alice = &game->alice;
     alice->x += alice->dx;
     alice->y += alice->dy;
@@ -825,13 +820,11 @@ bool isAliceRichedTheDoor1(object* alice, Door* door1)
 
 void diana_doRender(SDL_Renderer* renderer, GameState* game)
 {
-    //set the drawing color to blue
+    
     SDL_SetRenderDrawColor(renderer, 128, 128, 255, 255);
 
-    //Clear the screen (to blue)
     SDL_RenderClear(renderer);
 
-    //set the drawing color to white
     if (game->isEnd == false){
         if (game->levelCounter == 2)
             SDL_RenderCopy(renderer, game->backgroundLevel2Texture, NULL, NULL);
@@ -855,7 +848,6 @@ void diana_doRender(SDL_Renderer* renderer, GameState* game)
         else
             SDL_RenderCopy(renderer, game->doorImage, NULL, &DoorRect);
 
-        //draw a rectangle at man's position
         SDL_Rect rect = { game->scrollX + game->alice.x, game->alice.y, 32, 64 };
         SDL_RenderCopyEx(renderer, game->aliceFrames[game->alice.animFrame],
             NULL, &rect, 0, NULL, (game->alice.facingLeft == 0));
@@ -874,7 +866,6 @@ void diana_doRender(SDL_Renderer* renderer, GameState* game)
             DisplayEndPicture(renderer, "./resource/end/bad_end.bmp", game);
         }
     }
-    //We are done drawing, "present" or show to the screen what we've drawn
     SDL_RenderPresent(renderer);
 }
 
@@ -1014,7 +1005,6 @@ void initLevel2Ledges(GameState* game)
 
 void initLevel3Ledges(GameState* game)
 {
-    //init ledges
     for (int i = 0; i < 100; i++)
     {
         game->ledges[i].w = 256;
@@ -1142,7 +1132,6 @@ void renderCounterText(int counter, SDL_Renderer* renderer)
 }
 
 
-//useful utility function to see if two rectangles are colliding at all
 int collide2d(float x1, float y1, float x2, float y2, float wt1, float ht1, float wt2, float ht2)
 {
     return (!((x1 > (x2 + wt2)) || (x2 > (x1 + wt1)) || (y1 > (y2 + ht2)) || (y2 > (y1 + ht1))));
@@ -1150,7 +1139,6 @@ int collide2d(float x1, float y1, float x2, float y2, float wt1, float ht1, floa
 
 void diana_collisionDetect(GameState* game)
 {
-    //Check for collision with any ledges (brick blocks)
     for (int i = 0; i < 100; i++)
     {
         float mw = 42, mh = 74;
@@ -1263,20 +1251,17 @@ int diana_processEvents(SDL_Window* window, GameState* game)
         }
         break;
         case SDL_QUIT:
-            //quit out of the game
             done = 1;
             break;
         }
     }
 
-    //More jumping
     const Uint8* state = SDL_GetKeyboardState(NULL);
     if (state[SDL_SCANCODE_UP])
     {
         game->alice.dy -= 0.2f;
     }
 
-    //Walking
     if (state[SDL_SCANCODE_LEFT])
     {
         game->alice.dx -= 0.5;
