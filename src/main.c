@@ -78,13 +78,10 @@ int main() {
 		
 		while (!done)
 		{
-			//Check for events
 			done = processEvents(window, &game);
 			process(&game);
 			collisionDetect(&game);
-			//Render display
 			doRender(renderer, &game, &letter);
-			//don't burn up the CPU
 			SDL_Delay(16);
 		}  
 
@@ -92,19 +89,15 @@ int main() {
 
 		done = 0;
 
-		//Event loop
 		while (!done)
 		{
-			//Check for events
 			done = diana_processEvents(window, &game);
 
 			diana_process(&game);
 			diana_collisionDetect(&game);
 
-			//Render display
 			diana_doRender(renderer, &game);
 
-			//don't burn up the CPU
 			SDL_Delay(16);
 		}
 	}
